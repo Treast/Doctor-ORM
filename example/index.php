@@ -16,6 +16,8 @@ DoctorConfig::$pass = 'root';
 
 //Get the game with the id = 1
 $game = new Game(1);
-
+$game->name = "Starcraft 3";
+$game->editor = 2;
+$game->delete();
 //Equivalent to print_r($game) but with more presentation
 Game::debug($game);

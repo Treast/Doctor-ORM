@@ -18,6 +18,37 @@ class Doctor {
       }
     }
   }
+  public function __get($field) {
+  try {
+    return $this->$field;
+  } catch (Exception $e) {
+    return null;
+  }
+}
+
+public function delete(){
+  $table = self::getTableName();
+  $id = self::getPropertiesName('PrimaryKey')[0];
+  $query = "DELETE FROM ". $table ." WHERE (". join(', ', self::getPropertiesName('PrimaryKey')) .") = (". $this->$id .")";
+  //db()->query($query);
+  self::query($query);
+}
+
+public function __set($field, $value) {
+  if ($value != null) {
+    if(property_exists(get_class($this), $field)){
+      $table = self::getTableName();
+      if(in_array($field, self::getSelectableProperties())){
+        $id = self::getPropertiesName('PrimaryKey')[0];
+        $query = "UPDATE ". $table ." SET ". $field ." = '". $value ."' WHERE (". join(', ', self::getPropertiesName('PrimaryKey')) .") = (". $this->$id .")";
+        self::query($query);
+        $this->$field = $value;
+      }
+    }else{
+      throw new Exception("Unknown variable: ".$field);
+    }
+  }
+}
 
   private static function query($query){
     try {
